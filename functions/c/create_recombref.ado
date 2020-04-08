@@ -1,7 +1,7 @@
-*! 1.0.1 Richard Anney 31mar2020
+*! 1.0.1 Richard Anney 2apr2020
 
-program  graphlocuszoom_cr_ref
-local    function graphlocuszoom_cr_ref
+program  create_recombref
+local    function create_recombref
 local    `function'_version v1
 syntax  
 
