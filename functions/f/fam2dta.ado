@@ -51,14 +51,39 @@ qui { // module 3 - importing bim file (checking for delimit format)
 	noi di as text"#########################################################################"
 	noi di as text"# SECTION - 3: update variable names"
 	noi di as text"#########################################################################"
-	bim2count, bim(`fam')
-	noi di as text"# > ... indiv. in file "as result "${bim2count_ind}"
-	noi di as text"# > ........... import "as result "``function'_bim_short'"
-	import delim  using `fam'.fam, clear 
-	capture confirm variable v2
-		if !_rc { 
+	capture confirm file `fam'.fam
+	if !_rc {
+		clear
+		set obs 1
+		gen os = "`c(os)'"
+		if os == "Unix" { 
+			!wc -l `bim'.fam  > fam.count
+			import delim using fam.count, clear varnames(nonames)
+			erase fam.count
+			split v1,p(" ")
+			destring v11, replace
+			sum v11
+			global bim2count_ind `r(max)'
 			}
-		else {
+		else if os == "Windows" { 	
+			import delim using  `fam'.fam, clear varnames(nonames) colrange(1:)
+			count
+			clear
+			set obs 1
+			global bim2count_ind `r(N)'
+			}
+		noi di as text"# > .... indiv in file "as result "${bim2count_ind}"
+		}
+	else {
+		global bim2count_ind NaN
+		noi di as text"# > .... indiv in file "as result "${bim2count_ind}"
+		}
+	noi di as text"# > ........... import "as result "``function'_bim_short'"
+	import delim using `fam'.fam, delim(" ") clear 
+	capture confirm variable v2
+	if !_rc { 
+			}
+	else {
 			rename v1 v
 			split v,p(" ")
 			drop v
