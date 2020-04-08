@@ -1,0 +1,9 @@
+d create_1000genomes - function to create reference genotypes for 1000 genomes
+d Richard Anney - Cardiff University
+d Distribution-Date: 4apr2020
+f create_1000genomes.ado
+f ../b/bim2dta.ado
+f ../c/checkfile.ado
+f ../c/checkloc_name.ado
+f ../f/files2dta.ado
+f ../r/recodegenotype.ado

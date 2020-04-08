@@ -1,0 +1,4 @@
+d checkfile - function to determine whether a file exists at the designated PATH
+d Richard Anney - Cardiff University
+d Distribution-Date: 30mar2020
+f checkfile.ado

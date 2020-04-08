@@ -1,0 +1,9 @@
+d bim2frq - function to calculate from PLINK binaries allele frequency and create *_frq.dta via the --frq function in PLINK
+d Richard Anney - Cardiff University
+d Distribution-Date: 30mar2020
+f bim2frq.ado
+f ../b/bim_path_to_short.ado
+f ../c/checkfile.ado
+f ../c/checktabbed.ado
+f ../f/files2dta.ado
+f ../r/recodegenotype.ado

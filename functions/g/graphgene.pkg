@@ -1,0 +1,9 @@
+d graphgene - function to generate gene plots
+d Richard Anney - Cardiff University
+d Distribution-Date: 2apr2020
+f graphgene.ado
+f ../c/checkfile.ado
+f ../f/files2dta.ado
+f ../g/gene_plotorder.ado
+f ../i/intersect_genes.ado
+

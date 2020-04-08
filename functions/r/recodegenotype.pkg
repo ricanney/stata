@@ -1,0 +1,4 @@
+d recodegenotype - function to use allele variables (a1 a2) to create gt / converting indels and identifying non ACGT ID SNPs for renaming
+d Richard Anney - Cardiff University
+d Distribution-Date: 30mar2020
+f recodegenotype.ado

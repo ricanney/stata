@@ -1,0 +1,8 @@
+d fam2dta - function to process PLINK fam files and create *_fam.dta for additional Stata packages
+d Richard Anney - Cardiff University
+d Distribution-Date: 30mar2020
+f fam2dta.ado
+f ../b/bim_path_to_short.ado
+f ../b/bim2count.ado
+f ../c/checkfile.ado
+f ../f/files2dta.ado

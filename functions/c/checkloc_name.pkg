@@ -1,0 +1,6 @@
+d checkloc_name - function to check the presence and create (if missing) the variable loc_name
+d Richard Anney - Cardiff University
+d Distribution-Date: 31mar2020
+f checkloc_name.ado
+f ../r/recodegenotype.ado
+

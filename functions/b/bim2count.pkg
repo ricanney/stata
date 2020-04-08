@@ -1,0 +1,6 @@
+d bim2count - function to count the number of SNPs and individuals of a PLINK bim and fam file
+d Richard Anney - Cardiff University
+d Distribution-Date: 27mar2020
+f bim2count.ado
+f ../b/bim_path_to_short.ado
+f ../c/checkfile.ado

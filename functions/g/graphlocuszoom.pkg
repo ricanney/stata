@@ -1,0 +1,11 @@
+d graphgene - function to generate locuszoom style plots
+d Richard Anney - Cardiff University
+d Distribution-Date: 8apr2020
+f graphgene.ado
+f ../c/checkfile.ado
+f ../c/checktabbed.ado
+f ../f/files2dta.ado
+f ../g/gene_plotorder.ado
+f ../g/graphgene.ado
+f ../r/ref_path_to_short.ado
+

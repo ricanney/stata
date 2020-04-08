@@ -1,0 +1,4 @@
+d files2dta - function to create a dataset of files within a directory
+d Richard Anney - Cardiff University
+d Distribution-Date: 31mar2020
+f files2dta.ado

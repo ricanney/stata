@@ -1,0 +1,5 @@
+d gene_plotorder - sub-module function to define order of plots in gene plotting functions e.g. graphgene
+d Richard Anney - Cardiff University
+d Distribution-Date: 2apr2020
+f gene_plotorder.ado
+

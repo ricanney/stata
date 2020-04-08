@@ -1,0 +1,4 @@
+d ref_path_to_short - function to identify short name from ref path
+d Richard Anney - Cardiff University
+d Distribution-Date: 10jun2019
+f ref_path_to_short.ado

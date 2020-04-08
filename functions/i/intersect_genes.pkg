@@ -1,0 +1,8 @@
+d intersect_genes - function to mimic bedtools function -intersect in Stata scripts
+d Richard Anney - Cardiff University
+d Distribution-Date: 2apr2020
+f intersect_genes.ado
+f ../c/checkfile.ado
+f ../r/ref_path_to_short.ado
+
+

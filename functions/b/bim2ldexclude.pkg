@@ -1,0 +1,7 @@
+d bim2ldexclude - function to identify (from hg19 coordinates) regions of extended linkage disequilibrium from a PLINK bim file
+d Richard Anney - Cardiff University
+d Distribution-Date: 10jun2019
+f bim2ldexclude.ado
+f ../b/bim_path_to_short.ado
+f ../c/checkfile.ado
+f ../f/files2dta.ado

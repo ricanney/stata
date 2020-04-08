@@ -1,0 +1,5 @@
+d checktabbed - function to check the perl script tabbed.pl is correctly assigned on system
+d Richard Anney - Cardiff University
+d Distribution-Date: 30mar2020
+f checktabbed.ado
+f ../c/checkfile.ado

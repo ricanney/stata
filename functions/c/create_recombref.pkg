@@ -1,0 +1,5 @@
+d create_generef - function to create reference files for graphgene
+d Richard Anney - Cardiff University
+d Distribution-Date: 30mar2020
+f create_generef.ado
+f ../c/checkfile.ado

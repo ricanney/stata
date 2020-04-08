@@ -1,0 +1,11 @@
+d bim2eigenvec - function to calculate from PLINK binaries the eigenvectors / eigenvalues and create *_eigenvec.dta / *_eigenval.dta via the --pca function in PLINK
+d Richard Anney - Cardiff University
+d Distribution-Date: 31mar2020
+f bim2eigenvec.ado
+f ../b/bim_path_to_short.ado
+f ../b/bim2count.ado
+f ../b/bim2ldexclude.ado
+f ../c/checkfile.ado
+f ../c/checktabbed.ado
+f ../f/files2dta.ado
+
