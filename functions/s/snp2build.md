@@ -22,7 +22,7 @@ __Syntax__
 
 ```
 global bim2build  H:/databank/3-packages/bim2build/bim2build.dta
-use H:\software\stata\data\summaryqc\cardiff-alspac-genetics-2020-s25BAARS\cardiff-alspac-genetics-2020-s25BAARS-summaryqc.dta, clear
+use H:\software\stata\data\summaryqc\test\test-summaryqc.dta, clear
 snp2build, ref(${bim2build})
 ```
 

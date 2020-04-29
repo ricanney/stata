@@ -20,7 +20,7 @@ __Syntax__
 
 ```
 global snp2refid  ${init_root}/create_hrc/HRC.r1-1.GRCh37.wgs.mac5/all-hrc-1.1-chrall-mac5
-use H:\software\stata\data\summaryqc\cardiff-alspac-genetics-2020-s25BAARS\cardiff-alspac-genetics-2020-s25BAARS-summaryqc.dta, clear
+use H:\software\stata\data\summaryqc\test\test-summaryqc.dta, clear
 snp2refid, ref(${snp2refid})
 ```
 
