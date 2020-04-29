@@ -1,3 +1,3 @@
 v 1
 d Programs by Richard Anney, Cardiff University
-p files2dta - function to create a dataset of files within a directory
+p dir2dta - function to create a dataset of directories within a directory
