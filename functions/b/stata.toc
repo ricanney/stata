@@ -1,0 +1,10 @@
+v 1
+d Programs by Richard Anney, Cardiff University
+p bim2ancestry - function to generate PCA plots (aligned with reference genotypes) using PLINK
+p bim2count - function to count the number of SNPs and individuals of a PLINK bim and fam file
+p bim2dta - function to process PLINK bim files and create *_bim.dta for additional Stata packages
+p bim2eigenvec - function to calculate from PLINK binaries the eigenvectors / eigenvalues and create *_eigenvec.dta / *_eigenval.dta via the --pca function in PLINK
+p bim2frq - function to calculate from PLINK binaries allele frequency and create *_frq.dta via the --frq function in PLINK
+p bim2ldexclude - function to identify (from hg19 coordinates) regions of extended linkage disequilibrium from a PLINK bim file
+p bim2rymk - function to identify R Y M K SNPs from PLINK binaries
+p bim_path_to_short - function to identify short name from bim path
