@@ -1,0 +1,9 @@
+v 1
+d Programs by Richard Anney, Cardiff University
+p checkfile - function to determine whether a file exists at the designated PATH
+p checkloc_name - function to check the presence and create (if missing) the variable loc_name
+p checktabbed - function to check the perl script tabbed.pl is correctly assigned on system
+p create_1000genomes - function to create reference genotypes for 1000 genomes
+p create_generef - function to create reference files for graphgene
+p create_generef - function to create reference files for graphgene
+p create_hrc - function to create reference bim file and bim2dta for hrc v1.1

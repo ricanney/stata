@@ -1,0 +1,5 @@
+v 1
+d Programs by Richard Anney, Cardiff University
+p snp2build - function to determine the build of an open file with snp chr bp data
+p snp2refid - function to determine the build of an open file with snp chr bp data
+p summaryqc - function to create summaryqc.dta files from pre-processed summary GWAS data

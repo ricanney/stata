@@ -1,0 +1,4 @@
+v 1
+d Programs by Richard Anney, Cardiff University
+p fam2dta - function to process PLINK fam files and create *_fam.dta for additional Stata packages
+p files2dta - function to create a dataset of files within a directory

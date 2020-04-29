@@ -1,0 +1,5 @@
+v 1
+d Programs by Richard Anney, Cardiff University
+p gene_plotorder - sub-module function to define order of plots in gene plotting functions e.g. graphgene
+p graphgene - function to generate gene plots
+p graphgene - function to generate locuszoom style plots
