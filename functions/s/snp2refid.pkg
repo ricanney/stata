@@ -1,0 +1,8 @@
+d snp2refid - function to determine the build of an open file with snp chr bp data
+d Richard Anney - Cardiff University
+d Distribution-Date: 29apr2020
+f snp2refid.ado
+f ../c/checkfile.ado
+f ../c/checkloc_name.ado
+f ../r/ref_path_to_short.ado
+

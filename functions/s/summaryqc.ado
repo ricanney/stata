@@ -2,8 +2,8 @@
 
 program  summaryqc
 local    function summaryqc
-local    `function'_version v2
-syntax ,  ref(string asis) input(string asis) project(string asis) [png(string asis)]
+local    `function'_version v3
+syntax ,  input(string asis) output(string asis) build_ref(string asis) id_ref(string asis) [png(string asis)]
 
 noi di as text""
 noi di as text"#########################################################################"
@@ -27,17 +27,17 @@ qui { // module 1 - prepare folders
 	noi di as text"#########################################################################"
 	noi di as text"# SECTION - 1: prepare folders"
 	noi di as text"#########################################################################"
-	ref_path_to_short, ref(`ref')
+	ref_path_to_short, ref(`id_ref')
 	local `function'_ref_short ${ref_short}
 	ref_path_to_short, ref(`input')
 	local `function'_input_short ${ref_short}
 	cd ${init_root}	
 	!mkdir `function'
 	cd `function'
-	noi di as text"# > ..... project name "as result"`project'"
+	noi di as text"# > ..... project name "as result"`output'"
 	noi di as text"# > ..... derived from "as result"``function'_input_short'"
-	!mkdir `project'
-	cd `project'
+	!mkdir `output'
+	cd `output'
 	noi di as text"#########################################################################"
 	noi di as text""	
 	}
@@ -46,7 +46,8 @@ qui { // module 2 - define files
 	noi di as text"# SECTION - 2: define files"
 	noi di as text"#########################################################################"
 	noi di as text"# > ......... locating files to process"
-	noi checkfile, file(`ref')
+	noi checkfile, file(${init_root}/bim2dta/``function'_ref_short'/``function'_ref_short'_bim_noALLELE.dta)
+	noi checkfile, file(`build_ref')
 	noi di as text"#########################################################################"
 	noi di as text""	
 	}
@@ -156,21 +157,45 @@ qui { // module 3 - process file
 			}		
 		}
 	}
-qui { // module 4 - saving file
+qui { // module 4 - update build
 	noi di as text""
 	noi di as text"#########################################################################"
-	noi di as text"# SECTION - 4: saving file"
+	noi di as text"# SECTION - 4: update name to ``function'_ref_short'"
 	noi di as text"#########################################################################"	
+	snp2build, ref(`build_ref')
+	gen build = "${snp2build_build}"
+	if build == "hg19 +1" {
+		noi di as text"# > ... study build is "as result "${snp2build_build}"
+		snp2refid, ref(`id_ref')
+		}
+	else {
+		noi di as text"# > ... study build is "as error "${snp2build_build}"
+		exit
+		}
 	count
 	local summaryqc_Nout `r(N)'
 	noi di as text"# > ..... SNPs in file "as result "`summaryqc_Nout'"
+	lab var chr 			"Chromosome"
+	lab var snp 			"Marker Name"
+	lab var bp 				"Physical Location"
+	lab var a1 				"Allele 1 (ACGT(D/I))"
+	lab var a2 				"Allele 2 (ACGT(D/I))"
+	lab var beta      "Beta Coefficient"
+	lab var se        "Standard Error"
+	lab var z         "Z-statistic"
+	lab var or        "Odds Ratio"
+	lab var l95       "95% Confidence Interval (lower)"
+	lab var u95       "95% Confidence Interval (upper)"
+	lab var p         "P-Value"
+	lab var n         "Sample Size"
+	compress	
 	order chr bp snp a1 a2 beta se z or l95 u95 p n
 	keep  chr bp snp a1 a2 beta se z or l95 u95 p n
-	sort  chr bp
-	for var chr bp: tostring X, replace	
-	compress
-	noi di as text"# > ..... save data as "as result"`project'-`function'.dta"
-	save `project'-`function'.dta, replace
+	for var chr bp: destring X, replace
+	sort chr bp
+	for var chr bp: tostring X, replace
+	noi di as text"# > ..... save data as "as result"`output'-`function'.dta"
+	save `output'-`function'.dta, replace
 	noi di as text"#########################################################################"	
 	}
 qui { // module 4 - plot updated manhattan
@@ -178,12 +203,12 @@ qui { // module 4 - plot updated manhattan
 	noi di as text"#########################################################################"
 	noi di as text"# SECTION - 5: plot updated manhattan"
 	noi di as text"#########################################################################"		
-	graphmanhattan, summaryqc(${init_root}/summaryqc/`project'/`project') png(`png')
-	checkfile, file(${init_root}/graphmanhattan/`project'/`project'_graphmanhattan.gph)
+	graphmanhattan, summaryqc(${init_root}/summaryqc/`output'/`output') png(`png')
+	checkfile, file(${init_root}/graphmanhattan/`output'/`output'_graphmanhattan.gph)
 	noi di as text""
 	}
 qui { // module 6 - write log file
-	file open myfile using "`project'-`function'.log", write replace
+	file open myfile using "`output'-`function'.log", write replace
 	file write myfile`"#########################################################################"' _n
 	file write myfile`"# > .................. `function'"' _n
 	file write myfile`"# > ........... author Richard Anney"' _n
@@ -196,16 +221,16 @@ qui { // module 6 - write log file
 	file write myfile`"# Username:            `c(username)'"' _n
 	file write myfile`"# Operating System:    `c(os)'"' _n
 	file write myfile`"#########################################################################"' _n
-	file write myfile`"# > ..... project name `project'"' _n
+	file write myfile`"# > ..... project name `output'"' _n
 	file write myfile`"# > ....... input GWAS ``function'_input_short'"' _n
-	file write myfile`"# > .... SNP reference ``function'_ref_short'"' _n
+	file write myfile`"# > ... update name to ``function'_ref_short'"' _n
 	file write myfile`"# > .... SNPs in input `summaryqc_Nin'"' _n 
 	file write myfile`"# > .. P out-of-bounds `summaryqc_oobSNP'"' _n 
 	file write myfile`"# > ....... duplicates `summaryqc_dupSNP'"' _n
 	file write myfile`"# > info out-of-bounds `summaryqc_infoSNP'"' _n
 	file write myfile`"# >  direction missing `summaryqc_directionSNP'"' _n
 	file write myfile`"# > ... SNPs in output `summaryqc_Nin'"' _n 
-	file write myfile`"# > ....... saved data `project'-`function'.dta"' _n
+	file write myfile`"# > ....... saved data `output'-`function'.dta"' _n
 	file write myfile`"#########################################################################"' _n
 	file write myfile`"# > overview of `function'"' _n
 	file write myfile`"#########################################################################"' _n
@@ -221,8 +246,8 @@ qui { // module 6 - write log file
 qui { // module 8 - clean folder
 	files2dta, dir(`c(pwd)')
 	gen keep = .
-	replace keep = 1 if file == "`project'-`function'.dta"
-	replace keep = 1 if file == "`project'-`function'.log"
+	replace keep = 1 if file == "`output'-`function'.dta"
+	replace keep = 1 if file == "`output'-`function'.log"
 	drop if keep == 1
 	gen script = "erase " + file
 	outsheet script using temp.do, non noq replace 

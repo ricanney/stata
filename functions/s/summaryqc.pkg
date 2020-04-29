@@ -1,0 +1,11 @@
+d summaryqc - function to create summaryqc.dta files from pre-processed summary GWAS data
+d Richard Anney - Cardiff University
+d Distribution-Date: 29apr2020
+f summaryqc.ado
+f ../c/checkfile.ado
+f ../c/checkloc_name.ado
+f ../f/files2dta.ado
+f ../g/graphmanhattan.ado
+f ../r/ref_path_to_short.ado
+f ../s/snp2build.ado
+f ../s/snp2refid.ado
