@@ -1,0 +1,9 @@
+d summaryqc2top - function to create table of top GWAS hits from summaryqc.dta file
+d Richard Anney - Cardiff University
+d Distribution-Date: 30apr2020
+f summaryqc2top.ado
+f ../b/bim2dta.ado
+f ../c/checkfile.ado
+f ../c/checktabbed.ado
+f ../f/files2dta.ado
+f ../r/ref_path_to_short.ado
