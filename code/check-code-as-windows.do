@@ -5,15 +5,22 @@ global bim1 			H:/databank/2-genotypes/restricted/neonate-ahe/neonate-ahe-qc-v9
 global bim2 			H:/databank/2-genotypes/restricted/controls-combined-wtccc1/controls-combined-wtccc1 
 global bim2build  H:/databank/3-packages/bim2build/bim2build.dta
 global bim2refid  ${init_root}/create_hrc/HRC.r1-1.GRCh37.wgs.mac5/all-hrc-1.1-chrall-mac5
+global caddref    ${init_root}/create_cadd/1000G_phase3_inclAnno/eur-1000g-phase3-chrall-mac5_inclAnno-cadd.dta
+global eqtlref	  ${init_root}/create_eqtlref/GTEx_Analysis_v7_eQTL/GTEx_Analysis_v7_eQTL_all_1e5.dta
+global eqtlref_brain	  ${init_root}/create_eqtlref/GTEx_Analysis_v7_eQTL/GTEx_Analysis_v7_eQTL_brain_1e5.dta
 global generef	  ${init_root}/create_generef/Homo_sapiens.GRCh37.87.gtf/
 global recombref  ${init_root}/create_recombref/genetic_map_HapMapII_GRCh37/genetic_map_HapMapII_GRCh37-recombination-rate.dta 
 global ref		 	  ${init_root}/create_1000genomes/ftp.1000genomes.ebi.ac.uk/all-1000g-phase3-chrall-mac5-v2
 global ldref      ${init_root}/create_1000genomes/ftp.1000genomes.ebi.ac.uk/gbr-1000g-phase3-chrall-mac5-v2
 global hrcref     ${init_root}/create_hrc/HRC.r1-1.GRCh37.wgs.mac5/all-hrc-1.1-chrall-mac5
+global summaryqc  ${init_root}/summaryqc/demontis-walters-martin-2017-eur-adhd/demontis-walters-martin-2017-eur-adhd
 global summaryqc1 ${init_root}/summaryqc/demontis-walters-martin-2017-eur-adhd/demontis-walters-martin-2017-eur-adhd
 global summaryqc2 ${init_root}/summaryqc/ripke-neale-corvin-2014-scz/ripke-neale-corvin-2014-scz
 global summaryqc3 ${init_root}/summaryqc/grove-ripke-als-2017-eur-asd/grove-ripke-als-2017-eur-asd
 global summaryqc4 ${init_root}/summaryqc/anney-klei-pinto-2010-autism-cstr/anney-klei-pinto-2010-autism-cstr
+global w_hm3      H:/software/ldsc/data/
+global ldsc       H:/software/ldsc/bin/ldsc.py
+global munge      H:/software/ldsc/bin/munge_sumstats.py
 
 qui { // (+) bim_path_to_short
 	discard
@@ -132,6 +139,19 @@ qui { // (+) checktabbed
 		*(+)checkfile
 		}
 	}
+qui { // (+) create_1000genomes
+	discard
+	noi create_1000genomes
+	qui { // dependencies
+		*(+)bim2dta
+		*(+)checkfile
+		*(+)checkloc_name
+		*(+)files2dta
+		*(+)recodegenotypes
+		}
+	}
+qui { // (-) create_eqtlref 
+	}
 qui { // (+) create_generef
 	discard
 	create_generef, version(87)
@@ -147,17 +167,6 @@ qui { // (+) create_recombref
 		}	
 	}
 
-qui { // (+) create_1000genomes
-	discard
-	noi create_1000genomes
-	qui { // dependencies
-		*(+)bim2dta
-		*(+)checkfile
-		*(+)checkloc_name
-		*(+)files2dta
-		*(+)recodegenotypes
-		}
-	}
 qui { // (-) create_hapmap3
 }
 qui { // (+) create_hrc
@@ -260,6 +269,13 @@ qui { // (+) ref_path_to_short
 			*"none"
 			}	
 	}
+qui { // (-) snp2ldpairs
+	discard
+	use ${init_root}/summaryqc2top/demontis-walters-martin-2017-eur-adhd/demontis-walters-martin-2017-eur-adhd-summaryqc2top, clear
+	outsheet snp using ${init_root}/temp/demontis-walters-martin-2017-eur-adhd-summaryqc2top.snplist, non noq replace
+	snp2ldpairs , ldref(${ldref}) snplist(${init_root}/temp/demontis-walters-martin-2017-eur-adhd-summaryqc2top)
+	}
+
 qui { // (+) summaryqc
 	discard
 	qui { // pre-process dataset
@@ -290,6 +306,60 @@ qui { // (+) summaryqc
 		*(+)snp2refid
 		}
 	}
+qui { // (-) summaryqc_update
+	discard
+	foreach i of num 2/4 {
+		summaryqc_update, summaryqc(${summaryqc`i'}) id_ref(${hrcref}) build_ref(${bim2build})
+		}
+	qui { // dependencies
+		*(+)checkfile
+		*(+)files2dta
+		*(+)ref_path_to_short
+		*(+)snp2build
+		*(+)snp2refid
+		}
+	}	
+x
+qui { // (-) summaryqc2annot
+	discard
+	summaryqc2annot, summaryqc(${summaryqc4}) ldref(${ldref}) eqtlref(${eqtlref_brain}) caddref(${caddref}) generef(${generef}) minp(5e-8) 
+	}
+qui { // (-) summaryqc2cadd
+	discard
+	summaryqc2cadd, summaryqc(${summaryqc3}) ldref(${ldref}) caddref(${caddref}) minp(5e-8) 
+	}
+qui { // (-) summaryqc2eqtl
+	discard
+	summaryqc2eqtl, summaryqc(${summaryqc3}) ldref(${ldref}) eqtlref(${eqtlref_brain}) minp(5e-8) mineqtl(5e-8)
+	}
+qui { // (-) summaryqc2gene
+	discard
+	summaryqc2gene, summaryqc(${summaryqc2}) ldref(${ldref}) generef(${generef})
+	}
+x
+qui { // (-) summaryqc2h2
+	discard
+	summaryqc2h2,  	summaryqc(${summaryqc}) w_hm3(${w_hm3}) ldsc(${ldsc}) munge_sumstats(${munge}) pop_prev(.05) samp_prev(.3645)
+qui { // (-) summaryqc2sumstats
+	discard
+	summaryqc2sumstats, summaryqc(${summaryqc}) w_hm3(${w_hm3}) munge_sumstats(${munge}) 
+x 
+qui { // (+) summaryqc2top
+	discard
+	foreach i of num 1 {
+		summaryqc2top, summaryqc(${summaryqc`i'}) ldref(${ldref})
+		}
+	qui { // dependencies
+		*(+)bim2dta
+		*(+)checkfile
+		*(+)checktabbed
+		*(+)files2dta
+		*(+)ref_path_to_short
+		}
+	}
+ 
+
+x
 qui { // (+) snp2build
 	use H:\software\stata\data\summaryqc\cardiff-alspac-genetics-2020-s25BAARS\cardiff-alspac-genetics-2020-s25BAARS-summaryqc.dta, clear
 	snp2build, ref($bim2build)
