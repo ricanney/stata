@@ -72,7 +72,7 @@ qui { // module 4 - define genes in region
 	noi di as text"# SECTION - 4: define genes in region"
 	noi di as text"#########################################################################"
 	noi di as text"# > ......... define genes in region "
-	local already_created ${init_root}/intersect_genes/``function'_generef_short'/``function'_generef_short'-with-chr`chr'_`from'_`to'_intersect_genes.dta
+	local already_created ${init_root}/intersect_genes/``function'_generef_short'/chr`chr'_`from'_`to'_intersect_genes.dta
 	capture confirm file `already_created'
 	if !_rc {
 		}
