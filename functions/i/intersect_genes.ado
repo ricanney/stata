@@ -78,10 +78,10 @@ qui { // module 3 - define region to plot
 		count
 		if `r(N)' == 0 {
 			set obs 1
-			replace biotype == "dummy"
+			replace biotype = "dummy"
 			}
-		save Homo_sapiens.GRCh37.87.gtf_exon-with-chr`chr'_`from'_`to'_`function'.dta, replace
-		noi checkfile, file(Homo_sapiens.GRCh37.87.gtf_exon-with-chr`chr'_`from'_`to'_`function'.dta)
+		save chr`chr'_`from'_`to'_`function'.dta, replace
+		noi checkfile, file(chr`chr'_`from'_`to'_`function'.dta)
 		}
 	else if `function'_range_list != "" {
 		noi di as text"# > ....... processing "as result"range file defined"
@@ -89,58 +89,59 @@ qui { // module 3 - define region to plot
 			ref_path_to_short, ref(`range_list')	
 			clear
 			set obs 1
-			gen name = "Homo_sapiens.GRCh37.87.gtf_exon_${ref_short}"
-			split name, p(".dta")
-			replace name = name1 + "_`function'.dta"
+			gen name = "${ref_short}"
+			replace name = subinstr(name,".dta","",.)
 			local `function'_name = name[1]
+			di "``function'_name'"
 			}
-		use `range_list', clear
-		count
-		foreach num of num 1 / `r(N)' {
+		qui { // define final file
+			clear
+			set obs 1
+			gen intersect = "."
+			save ``function'_name'-`function'.dta, replace
+			}
+		qui { // append ranges to final file
 			use `range_list', clear
-			keep in `num'
-			split `function'_range,p("chr"":""..")
-			local chr 	= `function'_range2[1]
-			local from 	= `function'_range3[1]
-			local to 		= `function'_range4[1]
-			noi di as text"# > define range as"
-			noi di as text"# > .............. chr "as result"`chr'"
-			noi di as text"# > .......... from bp "as result"`from'"
-			noi di as text"# > ............ to bp "as result"`to'"
-			noi di as text"# > define genes in region "
-			use `generef'/Homo_sapiens.GRCh37.87.gtf_exon.dta, clear
-			gen intersect = ""
-			for var start end: destring X, replace
-			qui { // transcripts within region
+			count
+			forvalue num = 1 / `r(N)' {
+				use `range_list', clear
+				keep in `num'
+				split `function'_range,p("chr"":""..")
+				local chr 	= `function'_range2[1]
+				local from 	= `function'_range3[1]
+				local to 		= `function'_range4[1]
+				noi di as text"# > define range as"
+				noi di as text"# > .............. chr "as result"`chr'"
+				noi di as text"# > .......... from bp "as result"`from'"
+				noi di as text"# > ............ to bp "as result"`to'"
+				noi di as text"# > define genes in region "
+				use `generef'/Homo_sapiens.GRCh37.87.gtf_exon.dta, clear
+				gen intersect = ""
+				for var start end: destring X, replace
+				qui { // transcripts within region
 				replace intersect = "chr`chr':`from'..`to'" if chr == `chr' & inrange(start,`from',`to')
 				replace intersect = "chr`chr':`from'..`to'" if chr == `chr' & inrange(end,`from',`to')
 				}
-			qui { // transcripts the encompass the region
+				qui { // transcripts the encompass the region
 				replace intersect = "chr`chr':`from'..`to'" if chr == `chr' & start <`from' & end >`to'
 				}
-			lab var intersect "overlapping range"
-			keep if intersect == "chr`chr':`from'..`to'"
-			count
-			if `r(N)' == 0 {
+				lab var intersect "overlapping range"
+				keep if intersect == "chr`chr':`from'..`to'"
+				count
+				if `r(N)' == 0 {
 				set obs 1
-				replace biotype == "dummy"
+				replace biotype = "dummy"
 				}
-			compress
-			save Homo_sapiens.GRCh37.87.gtf_exon-with-chr`chr'_`from'_`to'_`function'.dta, replace
-			}		
-		use `range_list', clear
-		split `function'_range,p("chr"":""..")
-		gen script = `"append using Homo_sapiens.GRCh37.87.gtf_exon-with-chr"' + `function'_range2 + "_" + `function'_range3 + "_" + `function'_range4 + "_`function'.dta"
-		replace script = "use Homo_sapiens.GRCh37.87.gtf_exon-with-chr" + `function'_range2 + "_" + `function'_range3 + "_" + `function'_range4 + "_`function'.dta, clear" in 1
-		outsheet script using script.do, non noq replace
-		do script.do
-		erase script.do
-		compress
-		save ``function'_name', replace
-		noi checkfile, file(``function'_name')
+				compress
+				append using ``function'_name'-`function'.dta
+				save ``function'_name'-`function'.dta, replace
+				}
+			drop if intersect == "."
+			save ``function'_name'-`function'.dta, replace
+			}
+		noi di as text"#########################################################################"
+		noi di as text""	
 		}
-	noi di as text"#########################################################################"
-	noi di as text""	
 	}
 qui cd `return'
 restore
