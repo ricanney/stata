@@ -65,7 +65,7 @@ qui { // module 3 - perform data clumping
 	noi di as text"# SECTION - 3: perform summaryqc clumping"
 	noi di as text"#########################################################################"
 	noi di as text"# >  loading snps from "as result"``function'_summaryqc_short'"
-	noi di as text"# > ..... limit to P < "as result"`minp'"
+	noi di as text"# > ..... limit to P < "as result"`: display %10.4e `minp''"
 	local already_created ``function'_summaryqc_short'.top
 	capture confirm file `already_created'
 	if !_rc {
@@ -147,7 +147,7 @@ qui { // module 4 - define LD Range
 		merge 1:1 snp using `summaryqc'-summaryqc.dta
 		keep if _m == 3
 		renvars, upper
-		for var CHR BP OR SE P: destring X, replace force
+		for var CHR BP OR SE P BETA Z: destring X, replace force
 		compress
 		sort SNP 
 		tostring CHR, replace
@@ -162,17 +162,14 @@ qui { // module 4 - define LD Range
 		gen str4 X= string(OR,"%05.4f")
 		gen str4 Y= string(LB,"%05.4f")
 		gen str4 Z_= string(UB,"%05.4f") 
-		drop lnOR lnLB lnUB LB UB OR SE
+		drop lnOR lnLB lnUB LB UB OR 
 		gen OR = X + " (" + Y + "-" + Z_ + ")"
 		drop X Y Z_
-		keep  SNP POSITION A1 A2 OR P LD_RANGE
-		order SNP POSITION A1 A2 OR P LD_RANGE  
+		keep  SNP POSITION A1 A2 BETA SE Z OR P LD_RANGE
+		order SNP POSITION A1 A2 BETA SE Z OR P LD_RANGE  
 		lab var SNP 			"Marker Name"
 		lab var POSITION 	"Chromosome:Physical Location"
-		lab var A1 				"Allele 1 (ACGT(D/I))"
-		lab var A2 				"Allele 2 (ACGT(D/I))"
 		lab var OR        "Odds Ratio ((5% Confidence Intervals)"
-		lab var P         "P-Value"
 		lab var LD_RANGE  "Clumped Region"
 		sort P
 		renvars, lower
