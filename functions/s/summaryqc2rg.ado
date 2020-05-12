@@ -142,9 +142,51 @@ qui { // module 4 - define rg
 			noi di as text"# > ................ p "as result"`: display %10.4e `=p[`i']''"
 			noi di as text"#########################################################################"
 			}
+	lab var p1 					"Primary GWAS"
+	lab var p2 					"Comparison GWAS"
+	lab var rg 					"Genetic Correlation"
+	lab var se 					"Standard Error (rg)"
+	lab var z  					"Z-score"
+	lab var p  					"P-value"
+	lab var h2_obs 			"SNP based heritability (Comparison GWAS)"
+	lab var h2_obs_se 	"Standard Error (h2)"
+	lab var h2_int 			"SNP based hertiability intercept (Comparison GWAS)"
+	lab var h2_int_se 	"Standard Error (h2_int)"
+	lab var gcov_int 		"Genetic Covariance intercept"
+	lab var gcov_int_se	"Standard Error (gcov_int)"
 	save ``function'_summaryqc1_short'-`function'.dta, replace
+	noi di as text""
 	}
-qui { // module 4 - write log file
+qui { // module 5 - plot correlation graph
+	noi di as text"#########################################################################"
+	noi di as text"# SECTION - 5 - plot correlation graph"
+	noi di as text"#########################################################################"
+	gen sig = .
+	replace sig = 1 if p < .05
+	gen upper = rg + se
+	gen lower = rg - se
+	replace rg = 1 if rg > 1
+	replace rg = -1 if rg < -1
+	replace upper = 1 if upper > 1
+	replace lower = -1 if lower < -1
+	split p2,p("-2005-""-2006-""-2007-""-2008-""-2009-""-2010-""-2011-""-2012-""-2013-""-2014-""-2015-""-2016-""-2017-""-2018-""-2019-""-2020-")
+	drop if p1 == p2
+	for var rg se : drop if X == .
+	encode p22, gen(trait)
+	count
+	gen max = `r(N)' + .5
+	sum max
+	twoway 	rspike lower upper trait, lc(gray) horizontal || ///
+	scatter trait rg, msymbol(O) mcolor(gray) mlcolor(black) msize(medium) || ///
+	scatter trait rg if sig == 1, msymbol(O) mcolor(red) mlcolor(black) msize(large) ///
+	legend(off) ///
+	ytitle(" ") ylabel(0.5 " " 1(1)`r(N)' `r(mean)' " ",valuelabel nogrid angle(0) labs(small)) ///
+	xtitle("Genetic Correlation (rg)") xlabel(-1.1 " " -1(.2)1, nogrid) xline(0) ///
+	title("``function'_summaryqc1_short'") nodraw saving(``function'_summaryqc1_short'-`function'.gph, replace)
+	noi checkfile, file(``function'_summaryqc1_short'-`function'.gph)
+	noi di as text""
+	}
+qui { // module 5 - write log file
 	file open myfile using "``function'_summaryqc1_short'-`function'.log", write replace
 	file write myfile`"#########################################################################"' _n
 	file write myfile`"# > .................. `function'"' _n
@@ -175,12 +217,13 @@ qui { // module 4 - write log file
 	file write myfile `"#########################################################################"' _n
 	file close myfile	
 	}
-qui { // module 5 - clean folder
+qui { // module 6 - clean folder
 	files2dta, dir(`c(pwd)')
 	gen keep = .
 	replace keep = 1 if file == "``function'_summaryqc1_short'-`function'-hw3-rg.log"
 	replace keep = 1 if file == "``function'_summaryqc1_short'-`function'.log"
 	replace keep = 1 if file == "``function'_summaryqc1_short'-`function'.dta"
+	replace keep = 1 if file == "``function'_summaryqc1_short'-`function'.gph"
 	drop if keep == 1
 	gen script = "erase " + file
 	outsheet script using temp.do, non noq replace 
